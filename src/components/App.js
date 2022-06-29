@@ -3,6 +3,11 @@ import logo from '../logo.png';
 import './App.css';
 
 class App extends Component {
+  captureFile = (Event) => {
+    Event.preventDefault();
+    console.log ('file captured...')
+  }
+
   render() {
     return (
       <div>
@@ -33,7 +38,7 @@ class App extends Component {
                 }
                <h2>Meme of the day </h2>
                    <form>
-                   <input type='file' /> 
+                   <input type='file' onChange={this.captureFile}/> 
                    <input type='submit' />
                    </form>
               </div>
