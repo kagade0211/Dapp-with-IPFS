@@ -1,16 +1,50 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import './App.css';
+const ipfsClient = require('ipfs-http-client')
+// use local host if using local ipfs node but we are using infura
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol:'https'})
+
 
 class App extends Component {
+
+  constructor (props){
+    super (props);
+    this.state = {
+    buffer : null
+    };
+  }
   captureFile = (Event) => {
-    Event.preventDefault();
-    console.log ('file captured...')
+    //1. prevent defaults 2. captureFile to file constant 3. define readerobject 
+    // Prevent default events
+    Event.preventDefault()
+    // fetch file from event and first file to be saved in file constant.
+    const File = Event.target.files[0]
+    //The FileReader() constructor creates a new FileReader. syntax : new FileReader()
+    //file reader object lets web applns read contents of file stored on user computer.
+    const reader = new window.FileReader()
+    //readAsArrayBuffer() method is used to start reading the contents of a specified Blob or File . 
+    //When the read operation is finished, the readyState becomes DONE , and the loadend is triggered. 
+    //At that time, the result attribute contains an ArrayBuffer representing the file's data
+    reader.readAsArrayBuffer(File)
+    //triggers below function to print buffer word and its conversion results in console window.
+    reader.onloadend = () => {
+    // putting file on ipfs is two step process. first upload then submit . 
+    //In order to talk these to eachother, we need to use react state object
+    // console.log ('buffer', Buffer(reader.result)) hence we goona put this in state object
+    this.setState = ({buffer:Buffer(reader.result)})
+
+
+    } 
+  }
+  onSubmit = (Event) => {
+    Event.preventDefault()
+    console.log ('submitting the form...')
   }
 
   render() {
     return (
-      <div>
+      <div> 
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           <a
             className="navbar-brand col-sm-3 col-md-2 mr-0"
@@ -37,7 +71,9 @@ class App extends Component {
                  //&nbsp is used to give space // also for commenting in app.js file you need to // inside curly braces
                 }
                <h2>Meme of the day </h2>
-                   <form>
+                 {/* whenever form submitted it triggers onsubmit function then file which is in buffer will be put it on ipfs*/}
+                   <form onSubmit = {this.Onsubmit} >
+                 {/* whenever file uploaded  trigger capturefile function which captures file and further converted to buffer*/}
                    <input type='file' onChange={this.captureFile}/> 
                    <input type='submit' />
                    </form>
