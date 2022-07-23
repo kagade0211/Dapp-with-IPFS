@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import './App.css';
-const ipfsClient = require('ipfs-http-client')
-// use local host if using local ipfs node but we are using infura
-const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol:'https'})
+import { create } from 'ipfs-http-client'
+// use local host if using local ipfs node but we are using infura free gateway
+const ipfs = create({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 class App extends Component {
@@ -33,17 +33,25 @@ class App extends Component {
     //In order to talk these to eachother, we need to use react state object
     // console.log ('buffer', Buffer(reader.result)) hence we goona put this in state object
     this.setState = ({buffer:Buffer(reader.result)})
-
-
     } 
   }
   onSubmit = (Event) => {
     Event.preventDefault()
     console.log ('submitting the form...')
-  }
+    ipfs.add (this.state.buffer, (error, result) => {
+    console.log('ipfs.result',result)
+    if (error) {
+      console.error (error)
+      return
+    }
+  
+  })
+}
 
+
+  
   render() {
-    return (
+    return (  
       <div> 
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           <a
