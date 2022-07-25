@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import './App.css';
-import { create } from 'ipfs-http-client'
-// use local host if using local ipfs node but we are using infura free gateway
-const ipfs = create({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
-
+// import installed ipfs-http client using below command 
+const ipfsClient = require('ipfs-http-client')
+// local host if using local ipfs node but we are using infura free gateway
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 class App extends Component {
 
@@ -24,7 +24,7 @@ class App extends Component {
     //file reader object lets web applns read contents of file stored on user computer.
     const reader = new window.FileReader()
     //readAsArrayBuffer() method is used to start reading the contents of a specified Blob or File . 
-    //When the read operation is finished, the readyState becomes DONE , and the loadend is triggered. 
+      //When the read operation is finished, the readyState becomes DONE , and the loadend is triggered. 
     //At that time, the result attribute contains an ArrayBuffer representing the file's data
     reader.readAsArrayBuffer(File)
     //triggers below function to print buffer word and its conversion results in console window.
@@ -35,21 +35,21 @@ class App extends Component {
     this.setState = ({buffer:Buffer(reader.result)})
     } 
   }
+  // Example hash :
+  // Example url : 
   onSubmit = (Event) => {
     Event.preventDefault()
     console.log ('submitting the form...')
     ipfs.add (this.state.buffer, (error, result) => {
-    console.log('ipfs.result',result)
+    console.log('Ipfs result',result)
     if (error) {
       console.error (error)
       return
     }
-  
+  // Step-2 store file on blockchain
   })
 }
 
-
-  
   render() {
     return (  
       <div> 
@@ -80,7 +80,7 @@ class App extends Component {
                 }
                <h2>Meme of the day </h2>
                  {/* whenever form submitted it triggers onsubmit function then file which is in buffer will be put it on ipfs*/}
-                   <form onSubmit = {this.Onsubmit} >
+                   <form onSubmit = {this.onSubmit} >
                  {/* whenever file uploaded  trigger capturefile function which captures file and further converted to buffer*/}
                    <input type='file' onChange={this.captureFile}/> 
                    <input type='submit' />
