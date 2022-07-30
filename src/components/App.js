@@ -9,11 +9,12 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https
 class App extends Component {
 
   constructor (props){
-    super (props);
+    super(props);
     this.state = {
     buffer : null
     };
   }
+
   captureFile = (Event) => {
     //1. prevent defaults 2. captureFile to file constant 3. define readerobject 
     // Prevent default events
@@ -32,23 +33,35 @@ class App extends Component {
     // putting file on ipfs is two step process. first upload then submit . 
     //In order to talk these to eachother, we need to use react state object
     // console.log ('buffer', Buffer(reader.result)) hence we goona put this in state object
-    this.setState = ({buffer:Buffer(reader.result)})
+    this.setState({ buffer: Buffer(reader.result)})
+    console.log('buffer', this.state.buffer)
     } 
   }
   // Example hash :
   // Example url : 
-  onSubmit = (Event) => {
+  onSubmit = async (Event) => {
     Event.preventDefault()
     console.log ('submitting the form...')
-    ipfs.add (this.state.buffer, (error, result) => {
-    console.log('Ipfs result',result)
-    if (error) {
-      console.error (error)
-      return
+    let image = this.state.buffer ;
+    if (image){
+      try{
+        const postResponse = await ipfs.add(image) 
+        // need 
+        for await (const item of postResponse) {
+          console.log('item', item)
+        }
+        console.log( 'buffer', postResponse);
+      } catch(e){
+        console.log("Error: ", e)
+      }
+    } else{
+      alert("No files submitted. Please try again.");
+      console.log('ERROR: No image to submit');
     }
+  }
+    
   // Step-2 store file on blockchain
-  })
-}
+  
 
   render() {
     return (  
