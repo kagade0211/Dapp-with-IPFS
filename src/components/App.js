@@ -43,14 +43,13 @@ class App extends Component {
     Event.preventDefault()
     console.log ('submitting the form...')
     let image = this.state.buffer ;
+    //
     if (image){
       try{
         const postResponse = await ipfs.add(image) 
-        // need 
         for await (const item of postResponse) {
           console.log('item', item)
         }
-        console.log( 'buffer', postResponse);
       } catch(e){
         console.log("Error: ", e)
       }
